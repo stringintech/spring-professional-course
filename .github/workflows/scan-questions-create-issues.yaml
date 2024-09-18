@@ -21,7 +21,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           issue_numbers=""
-          for file in $(find ./src -type f); do
+          for file in $(find ./mybank/src -type f); do
             while IFS= read -r line; do
               lineNumber=$(echo "$line" | cut -d':' -f1)
               title=$(echo "$line" | sed -E 's/.*(#|\/\/|--)Q[0-9]+:[0-9]+ *//')
@@ -51,7 +51,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           
-          for file in $(find ./src -type f); do
+          for file in $(find ./mybank/src -type f); do
             sed -i -E 's/(#|\/\/|--)Q[0-9]+:[0-9]+.*//g' "$file"
           done
           
