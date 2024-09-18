@@ -12,12 +12,14 @@ public class Transaction {
     String reference;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm'Z'")
     ZonedDateTime date;
+    String slogan;
 
-    public Transaction(Integer amount, String reference, ZonedDateTime date) {
+    public Transaction(Integer amount, String reference, ZonedDateTime date, String slogan) {
         this.id = UUID.randomUUID().toString();
         this.amount = amount;
         this.reference = reference;
         this.date = date;
+        this.slogan = slogan;
     }
 
     public String getId() {
@@ -50,5 +52,13 @@ public class Transaction {
 
     public void setDate(ZonedDateTime date) {
         this.date = date;
+    }
+
+    public String getSlogan() {
+        return slogan;
+    }
+
+    public void setSlogan(String slogan) {
+        this.slogan = slogan;
     }
 }

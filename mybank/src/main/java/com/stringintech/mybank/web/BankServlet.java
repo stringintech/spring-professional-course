@@ -1,7 +1,7 @@
 package com.stringintech.mybank.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stringintech.mybank.context.Context;
+import com.stringintech.mybank.config.Config;
 import com.stringintech.mybank.model.Transaction;
 import com.stringintech.mybank.service.TransactionService;
 import jakarta.servlet.ServletException;
@@ -20,7 +20,7 @@ public class BankServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(Context.class);
+        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(Config.class);
         this.transactionService = ctx.getBean(TransactionService.class);
         this.objectMapper = ctx.getBean(ObjectMapper.class);
     }
