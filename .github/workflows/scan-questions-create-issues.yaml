@@ -1,0 +1,60 @@
+name: Scan for Questions, Create Issues, and Remove Questions
+
+on:
+  push:
+      branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: write
+
+jobs:
+  scan-create-issues-and-remove:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Scan for questions, create issues, and store issue numbers
+        id: create_issues
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          issue_numbers=""
+          for file in $(find ./src -type f); do
+            while IFS= read -r line; do
+              lineNumber=$(echo "$line" | cut -d':' -f1)
+              title=$(echo "$line" | sed -E 's/.*(#|\/\/|--)Q[0-9]+:[0-9]+ *//')
+              range=$(echo "$line" | grep -oP '(?<=#|//|--)Q\K[0-9]+:[0-9]+' || echo "0:0")
+          
+              before=$(echo $range | cut -d':' -f1)
+              after=$(echo $range | cut -d':' -f2)
+          
+              startLine=$((lineNumber - before))
+              endLine=$((lineNumber + after))
+          
+              startLine=$((startLine > 0 ? startLine : 1))
+          
+              link="https://github.com/${{ github.repository }}/blob/${{ github.sha }}${file#.}#L$startLine-L$endLine"
+          
+              issue_url=$(gh issue create --title "$title" --body "$link")
+              issue_number=$(echo $issue_url | awk -F'/' '{print $NF}')
+              issue_numbers+="#$issue_number "
+            done < <(grep -n -E '(#|//|--)Q([0-9]+:[0-9]+).*$' "$file")
+          done
+          echo "ISSUE_NUMBERS=${issue_numbers}" >> $GITHUB_OUTPUT
+
+      - name: Remove questions and commit changes
+        env:
+          ISSUE_NUMBERS: ${{ steps.create_issues.outputs.ISSUE_NUMBERS }}
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          for file in $(find ./src -type f); do
+            sed -i -E 's/(#|\/\/|--)Q[0-9]+:[0-9]+.*//g' "$file"
+          done
+          
+          git add .
+          git diff --staged --quiet || git commit -m "[ci] create issues ${ISSUE_NUMBERS}"
+          git push
