@@ -16,7 +16,7 @@ public class TransactionService {
     private final DummyService dummyService;
 
 //    @Autowired
-//    private DummyService dummyService; //Q1:0 How field injection happens on private fields? Also when does it happen? "After" transaction service instantiation?
+//    private DummyService dummyService; 
 
     public TransactionService(@Value("${bank.slogan}") String bankSlogan, DummyService dummyService) {
         this.bankSlogan = bankSlogan;
