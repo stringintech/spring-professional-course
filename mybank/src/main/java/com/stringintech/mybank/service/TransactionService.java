@@ -1,12 +1,14 @@
 package com.stringintech.mybank.service;
 
 import com.stringintech.mybank.model.Transaction;
+import org.springframework.stereotype.Component;
 
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+@Component
 public class TransactionService {
 
     private final static List<Transaction> txs = new CopyOnWriteArrayList<>();
