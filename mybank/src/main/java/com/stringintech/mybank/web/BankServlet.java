@@ -21,7 +21,7 @@ public class BankServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(Config.class);
-        this.transactionService = ctx.getBean(TransactionService.class);
+        this.transactionService = ctx.getBean(TransactionService.class); //Q0:0 singleton transaction service instantiated after getBean called or before?
         this.objectMapper = ctx.getBean(ObjectMapper.class);
     }
 

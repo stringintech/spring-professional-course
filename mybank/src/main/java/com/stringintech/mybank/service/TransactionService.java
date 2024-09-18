@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -14,9 +13,14 @@ public class TransactionService {
 
     private final static List<Transaction> txs = new CopyOnWriteArrayList<>();
     private final String bankSlogan;
+    private final DummyService dummyService;
 
-    public TransactionService(@Value("${bank.slogan}") String bankSlogan) {
+//    @Autowired
+//    private DummyService dummyService; //Q1:0 How field injection happens on private fields? Also when does it happen? "After" transaction service instantiation?
+
+    public TransactionService(@Value("${bank.slogan}") String bankSlogan, DummyService dummyService) {
         this.bankSlogan = bankSlogan;
+        this.dummyService = dummyService;
     }
 
     public Transaction create(Integer amount, String reference) {
